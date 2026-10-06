@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Essay Practice Lab — Timed Placement Writing Practice</title>
+<meta name="description" content="Timed essay practice for placement-style written assessments. Local-first, no AI during practice.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="mobile-note" role="note">
+  For realistic placement practice, use a laptop or desktop keyboard.
+</div>
+
+<!-- ============ APP HEADER ============ -->
+<header class="app-header" id="appHeader">
+  <div class="header-inner">
+    <a href="#/home" class="brand" data-route>
+      <span class="brand-mark" aria-hidden="true">E</span>
+      <span class="brand-name">Essay Practice Lab</span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="#/home" data-route data-nav="home">Practice</a>
+      <a href="#/topics" data-route data-nav="topics">Topics</a>
+      <a href="#/progress" data-route data-nav="progress">Progress</a>
+      <a href="#/guide" data-route data-nav="guide">Guide</a>
+      <a href="#/settings" data-route data-nav="settings">Settings</a>
+    </nav>
+    <div class="daily-chip" id="dailyChip" title="Daily practice goal">
+      <span class="daily-chip-dot" aria-hidden="true"></span>
+      <span id="dailyChipText">0 / 1 today</span>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<!-- ============ HOME ============ -->
+<section class="screen" id="screen-home" data-screen="home" aria-labelledby="homeTitle">
+  <div class="hero">
+    <p class="eyebrow">Placement written-assessment practice</p>
+    <h1 id="homeTitle">Build the skill to write clearly under pressure.</h1>
+    <p class="hero-sub">Practice timed essays designed around placement-style written assessments — with a real clock, a real word target, and honest review afterwards.</p>
+    <div class="hero-actions">
+      <a href="#/topics" class="btn btn-primary" data-route>Start practice</a>
+      <a href="#/topics" class="btn btn-ghost" data-route>Browse topics</a>
+    </div>
+  </div>
+
+  <div class="home-grid">
+    <div class="stat-row" role="list" aria-label="Your practice statistics">
+      <div class="stat-card" role="listitem">
+        <span class="stat-label">Today's practice</span>
+        <span class="stat-value" id="statToday">0</span>
+        <span class="stat-hint">essays completed</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-label">Sessions completed</span>
+        <span class="stat-value" id="statSessions">0</span>
+        <span class="stat-hint">all time</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-label">Best word count</span>
+        <span class="stat-value" id="statBestWords">—</span>
+        <span class="stat-hint">within target</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-label">Current streak</span>
+        <span class="stat-value" id="statStreak">0</span>
+        <span class="stat-hint">days</span>
+      </div>
+    </div>
+
+    <div class="card continue-card" id="continueCard" hidden>
+      <div class="card-head">
+        <h2>Continue your preparation</h2>
+      </div>
+      <div class="continue-body">
+        <p class="continue-topic" id="continueTopic">—</p>
+        <dl class="continue-meta">
+          <div><dt>Score</dt><dd id="continueScore">—</dd></div>
+          <div><dt>Date</dt><dd id="continueDate">—</dd></div>
+          <div><dt>Duration</dt><dd id="continueDuration">—</dd></div>
+        </dl>
+        <div class="continue-actions">
+          <a href="#/topics" class="btn btn-primary btn-sm" data-route>Practice again</a>
+          <a href="#/progress" class="btn btn-ghost btn-sm" data-route>View progress</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card empty-card" id="homeEmpty">
+      <h2>Ready when you are.</h2>
+      <p>You haven't completed a practice session yet. Ten focused minutes a day is enough to see progress.</p>
+      <a href="#/topics" class="btn btn-primary" data-route>Start your first essay</a>
+    </div>
+
+    <p class="privacy-note">Your essays are stored locally in this browser. Nothing is uploaded.</p>
+  </div>
+</section>
+
+<!-- ============ TOPIC LIBRARY ============ -->
+<section class="screen" id="screen-topics" data-screen="topics" aria-labelledby="topicsTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <h1 id="topicsTitle">Topic Library</h1>
+      <p class="screen-sub">Choose a topic, filter by category, or let the lab pick one you haven't practiced recently.</p>
+    </div>
+    <button class="btn btn-accent" id="surpriseBtn" type="button">Surprise me</button>
+  </div>
+
+  <div class="filters" role="group" aria-label="Topic filters">
+    <div class="filter-group">
+      <label for="filterCategory">Category</label>
+      <select id="filterCategory">
+        <option value="all">All categories</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filterDifficulty">Difficulty</label>
+      <select id="filterDifficulty">
+        <option value="all">All levels</option>
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Challenging">Challenging</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filterStatus">Status</label>
+      <select id="filterStatus">
+        <option value="all">All statuses</option>
+        <option value="Not Practiced">Not Practiced</option>
+        <option value="Practiced">Practiced</option>
+        <option value="Needs Improvement">Needs Improvement</option>
+        <option value="Strong">Strong</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="topic-grid" id="topicGrid" role="list"></div>
+  <p class="empty-state" id="topicEmpty" hidden>No topics match these filters.</p>
+</section>
+
+<!-- ============ SURPRISE MODAL ============ -->
+<div class="modal-backdrop" id="surpriseModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="surpriseTitle">
+    <p class="eyebrow">Your challenge</p>
+    <h2 id="surpriseTitle">—</h2>
+    <p class="modal-sub">Ready?</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="surpriseStart" type="button">Start writing</button>
+      <button class="btn btn-ghost" id="surpriseAgain" type="button">Pick another</button>
+      <button class="btn btn-ghost" id="surpriseClose" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRE-WRITING ============ -->
+<section class="screen" id="screen-prewrite" data-screen="prewrite" aria-labelledby="preTopicTitle" hidden>
+  <div class="prewrite-layout">
+    <div class="prewrite-main">
+      <p class="eyebrow" id="preCategory">Topic</p>
+      <h1 id="preTopicTitle">—</h1>
+
+      <div class="config-row">
+        <div class="config-item">
+          <span class="config-label">Time limit</span>
+          <span class="config-value" id="preTime">10 minutes</span>
+        </div>
+        <div class="config-item">
+          <span class="config-label">Target length</span>
+          <span class="config-value" id="preTarget">160–200 words</span>
+        </div>
+        <div class="config-item" id="preRecommendedWrap">
+          <span class="config-label">Recommended</span>
+          <span class="config-value" id="preRecommended">192–200 words</span>
+        </div>
+      </div>
+
+      <div class="card structure-card">
+        <h2>Structure</h2>
+        <ol class="structure-list">
+          <li><strong>Introduction</strong> — frame the topic in one or two sentences.</li>
+          <li><strong>Two body points</strong> — develop each with an example or explanation.</li>
+          <li><strong>Conclusion</strong> — close with a clear final position.</li>
+        </ol>
+        <p class="remember-line">Remember: <strong>Understand → Plan → Write → Review</strong></p>
+      </div>
+
+      <fieldset class="mode-picker">
+        <legend>Practice mode</legend>
+        <label class="mode-option">
+          <input type="radio" name="mode" value="guided" checked>
+          <span class="mode-card">
+            <span class="mode-name">Guided Practice</span>
+            <span class="mode-desc">Subtle phase reminders while you write.</span>
+          </span>
+        </label>
+        <label class="mode-option">
+          <input type="radio" name="mode" value="exam">
+          <span class="mode-card">
+            <span class="mode-name">Exam Simulation</span>
+            <span class="mode-desc">Minimal interface. No hints. Strict timer.</span>
+          </span>
+        </label>
+      </fieldset>
+
+      <fieldset class="profile-picker">
+        <legend>Practice profile</legend>
+        <div class="profile-options" id="profileOptions"></div>
+      </fieldset>
+    </div>
+
+    <aside class="card checklist-card" aria-labelledby="checklistTitle">
+      <h2 id="checklistTitle">Before you start</h2>
+      <ul class="checklist" id="preChecklist">
+        <li><label><input type="checkbox"> I understand the topic</label></li>
+        <li><label><input type="checkbox"> I know my time limit</label></li>
+        <li><label><input type="checkbox"> I know my word target</label></li>
+        <li><label><input type="checkbox"> I will write independently</label></li>
+        <li><label><input type="checkbox"> I will reserve time for revision</label></li>
+      </ul>
+      <button class="btn btn-primary btn-block" id="startWritingBtn" type="button" disabled>I'm ready — start</button>
+      <p class="checklist-hint">Tick each item to unlock the timer.</p>
+      <button class="btn btn-ghost btn-block" id="prewriteBack" type="button">Choose a different topic</button>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ WRITING ============ -->
+<section class="screen screen-writing" id="screen-writing" data-screen="writing" aria-labelledby="writeTopic" hidden>
+  <div class="writing-topbar">
+    <div class="writing-topic-wrap">
+      <span class="eyebrow">Topic</span>
+      <h1 id="writeTopic">—</h1>
+    </div>
+    <div class="timer-wrap">
+      <span class="phase-prompt" id="phasePrompt" role="status"></span>
+      <div class="timer" id="timerDisplay" role="timer" aria-live="off" aria-label="Time remaining">10:00</div>
+    </div>
+  </div>
+
+  <div class="editor-card">
+    <label class="visually-hidden" for="editor">Essay writing area</label>
+    <textarea id="editor" placeholder="Start writing here..." spellcheck="true" autocomplete="off" autocapitalize="sentences"></textarea>
+    <div class="editor-footer">
+      <div class="editor-status">
+        <span class="target-line">Target: <span id="targetLine">160–200 words</span></span>
+        <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <span class="word-count" id="wordCount" role="status">0 words</span>
+    </div>
+  </div>
+
+  <div class="writing-actions">
+    <button class="btn btn-ghost" id="pauseBtn" type="button">Pause</button>
+    <button class="btn btn-primary" id="finishBtn" type="button">Finish &amp; review</button>
+  </div>
+</section>
+
+<!-- ============ PAUSE MODAL ============ -->
+<div class="modal-backdrop" id="pauseModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <h2 id="pauseTitle">Paused</h2>
+    <p class="modal-sub">The timer is stopped. Take a breath.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="resumeBtn" type="button">Resume writing</button>
+      <button class="btn btn-ghost" id="quitBtn" type="button">End session</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TIME UP MODAL ============ -->
+<div class="modal-backdrop" id="timeUpModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="timeUpTitle">
+    <h2 id="timeUpTitle">Time is up.</h2>
+    <p class="modal-sub">Your essay has been saved. Review your essay.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="timeUpReview" type="button">Review your essay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESUME SESSION MODAL ============ -->
+<div class="modal-backdrop" id="resumeModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resumeTitle">
+    <h2 id="resumeTitle">Resume your previous session?</h2>
+    <p class="modal-sub" id="resumeDetail">An unfinished practice session was found.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="resumeYes" type="button">Resume</button>
+      <button class="btn btn-ghost" id="resumeNo" type="button">Discard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<section class="screen" id="screen-results" data-screen="results" aria-labelledby="resultsTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <p class="eyebrow">Practice complete</p>
+      <h1 id="resultsTitle">Session Results</h1>
+      <p class="screen-sub" id="resultsTopic">—</p>
+    </div>
+    <div class="result-grade" id="resultGrade">—</div>
+  </div>
+
+  <div class="result-metrics">
+    <div class="metric"><span class="metric-label">Time used</span><span class="metric-value" id="resTime">—</span></div>
+    <div class="metric"><span class="metric-label">Words</span><span class="metric-value" id="resWords">—</span></div>
+    <div class="metric"><span class="metric-label">Typing speed</span><span class="metric-value" id="resWpm">—</span></div>
+    <div class="metric"><span class="metric-label">Practice score</span><span class="metric-value" id="resScore">—</span></div>
+  </div>
+  <p class="score-disclaimer">Practice Score is a rule-based training indicator — not an official evaluation and not a prediction of selection.</p>
+
+  <div class="card">
+    <h2>Scorecard</h2>
+    <div class="scorecard" id="scorecard"></div>
+    <details class="rules-details">
+      <summary>How the score is calculated</summary>
+      <ul>
+        <li>Word count — up to 25 points (full marks inside the target range)</li>
+        <li>Structure — up to 25 points (paragraphs, intro/body/conclusion signals)</li>
+        <li>Time management — up to 20 points (meaningful use of available time)</li>
+        <li>Sentence quality signals — up to 15 points (length variety, capitalization, punctuation)</li>
+        <li>Revision behaviour — up to 15 points (finishing early enough to review, avoiding rushes)</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="review-columns">
+    <div class="card went-well">
+      <h2>What went well</h2>
+      <ul id="wentWellList"></ul>
+    </div>
+    <div class="card to-improve">
+      <h2>What to improve</h2>
+      <ul id="improveList"></ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Structure checklist</h2>
+    <ul class="structure-check" id="structureCheck"></ul>
+    <p class="heuristic-note">These checks are heuristic "Writing Signals" based on simple text patterns — they are not a professional grammar evaluation.</p>
+  </div>
+
+  <div class="card">
+    <h2>Writing signals</h2>
+    <div class="signal-grid" id="signalGrid"></div>
+  </div>
+
+  <div class="results-actions">
+    <button class="btn btn-primary" id="viewEssayBtn" type="button">Read your essay</button>
+    <a class="btn btn-ghost" href="#/topics" data-route>Practice another topic</a>
+    <a class="btn btn-ghost" href="#/progress" data-route>View progress</a>
+  </div>
+</section>
+
+<!-- ============ ESSAY REVIEW ============ -->
+<section class="screen" id="screen-essay" data-screen="essay" aria-labelledby="essayTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <p class="eyebrow">Your essay</p>
+      <h1 id="essayTitle">—</h1>
+      <p class="screen-sub" id="essayMeta">—</p>
+    </div>
+    <button class="btn btn-ghost" id="essayBack" type="button">Back to results</button>
+  </div>
+  <article class="card essay-view" id="essayText" aria-label="Essay text"></article>
+  <div class="result-metrics">
+    <div class="metric"><span class="metric-label">Words</span><span class="metric-value" id="esWords">—</span></div>
+    <div class="metric"><span class="metric-label">Sentences</span><span class="metric-value" id="esSentences">—</span></div>
+    <div class="metric"><span class="metric-label">Paragraphs</span><span class="metric-value" id="esParagraphs">—</span></div>
+    <div class="metric"><span class="metric-label">Est. WPM</span><span class="metric-value" id="esWpm">—</span></div>
+    <div class="metric"><span class="metric-label">Time used</span><span class="metric-value" id="esTime">—</span></div>
+  </div>
+</section>
+
+<!-- ============ PROGRESS ============ -->
+<section class="screen" id="screen-progress" data-screen="progress" aria-labelledby="progressTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <h1 id="progressTitle">Progress</h1>
+      <p class="screen-sub">Consistency beats intensity.</p>
+    </div>
+    <div class="daily-goal" id="dailyGoalBox">
+      <span class="daily-goal-label">Daily goal</span>
+      <span class="daily-goal-value" id="dailyGoalText">0 / 1 essays completed today</span>
+    </div>
+  </div>
+
+  <div class="stat-row stat-row-wide" id="progressStats"></div>
+
+  <div class="progress-empty card" id="progressEmpty" hidden>
+    <h2>Your completed essays will appear here.</h2>
+    <p>Finish one timed session and your trends will start to show.</p>
+    <a href="#/topics" class="btn btn-primary" data-route>Start practice</a>
+  </div>
+
+  <div id="progressContent">
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <h2>Word count trend</h2>
+        <div class="chart" id="chartWords" role="img" aria-label="Word count per session"></div>
+      </div>
+      <div class="card chart-card">
+        <h2>Writing speed trend</h2>
+        <div class="chart" id="chartWpm" role="img" aria-label="Typing speed per session"></div>
+      </div>
+      <div class="card chart-card">
+        <h2>Session scores</h2>
+        <div class="chart" id="chartScore" role="img" aria-label="Practice score per session"></div>
+      </div>
+    </div>
+
+    <div class="review-columns">
+      <div class="card">
+        <h2>Your strongest areas</h2>
+        <ul id="strongList"></ul>
+      </div>
+      <div class="card">
+        <h2>Areas to practice</h2>
+        <ul id="weakList"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head row-between">
+        <h2>Session history</h2>
+        <button class="btn btn-ghost btn-sm danger" id="clearHistoryBtn" type="button">Clear all history</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUIDE ============ -->
+<section class="screen" id="screen-guide" data-screen="guide" aria-labelledby="guideTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <h1 id="guideTitle">How to Write Under Pressure</h1>
+      <p class="screen-sub">A practical method for placement-style essays of 160–200 words in 10 minutes.</p>
+    </div>
+  </div>
+
+  <div class="card guide-plan">
+    <h2>The 1-2-2-1 plan</h2>
+    <div class="plan-grid">
+      <div class="plan-cell"><span class="plan-num">1</span><span class="plan-text">Introduction</span></div>
+      <div class="plan-cell"><span class="plan-num">2</span><span class="plan-text">Body points</span></div>
+      <div class="plan-cell"><span class="plan-num">2</span><span class="plan-text">Examples / explanations</span></div>
+      <div class="plan-cell"><span class="plan-num">1</span><span class="plan-text">Conclusion</span></div>
+    </div>
+    <p class="guide-note">Suggested pacing: 1 minute to understand the topic, 2 minutes to plan, 6 minutes to write, 1 minute to revise.</p>
+  </div>
+
+  <ol class="guide-steps">
+    <li class="card"><h2><span class="step-num">Step 1</span> Understand the topic</h2>
+      <p>Read the topic twice. Decide your position before you type a word. A clear, simple stance beats a clever but confusing one.</p></li>
+    <li class="card"><h2><span class="step-num">Step 2</span> Plan quickly</h2>
+      <p>Spend about two minutes noting two main points and one example for each. This outline is your safety net when the clock feels loud.</p></li>
+    <li class="card"><h2><span class="step-num">Step 3</span> Write the introduction</h2>
+      <p>One or two sentences: restate the issue in your own words and state your position. Do not spend more than a minute here.</p></li>
+    <li class="card"><h2><span class="step-num">Step 4</span> Develop two body points</h2>
+      <p>One paragraph per point. Begin each with a clear topic sentence, then explain or give a short example.</p></li>
+    <li class="card"><h2><span class="step-num">Step 5</span> Give examples / explanations</h2>
+      <p>Concrete, believable examples make arguments persuasive. They can come from everyday life, news, or your studies — they do not need statistics.</p></li>
+    <li class="card"><h2><span class="step-num">Step 6</span> Write the conclusion</h2>
+      <p>Summarise your position in one or two sentences. Signal it with a phrase such as "In conclusion" so the reader knows you finished deliberately.</p></li>
+    <li class="card"><h2><span class="step-num">Step 7</span> Reserve time for revision</h2>
+      <p>Keep the final minute for spelling, missing words, and repeated punctuation. Small fixes here protect the marks you already earned.</p></li>
+  </ol>
+
+  <div class="card guide-note-card">
+    <h2>A note on practice</h2>
+    <p>This lab never writes for you. Real placement assessments measure <em>your</em> ability to organise thoughts under time pressure — practice expressing your own ideas without AI tools, and review honestly afterwards.</p>
+  </div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="screen" id="screen-settings" data-screen="settings" aria-labelledby="settingsTitle" hidden>
+  <div class="screen-head">
+    <div>
+      <h1 id="settingsTitle">Settings</h1>
+      <p class="screen-sub">Preferences are stored locally in this browser. Changing settings never deletes your sessions.</p>
+    </div>
+  </div>
+
+  <div class="settings-grid">
+    <div class="card">
+      <h2>Appearance</h2>
+      <div class="setting-row">
+        <label for="setTheme">Theme</label>
+        <select id="setTheme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label for="setFontSize">Editor font size</label>
+        <select id="setFontSize">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Session defaults</h2>
+      <div class="setting-row">
+        <label for="setDuration">Default duration (minutes)</label>
+        <input type="number" id="setDuration" min="3" max="60" step="1">
+      </div>
+      <div class="setting-row">
+        <label for="setMinWords">Minimum words</label>
+        <input type="number" id="setMinWords" min="50" max="1000" step="10">
+      </div>
+      <div class="setting-row">
+        <label for="setMaxWords">Maximum words</label>
+        <input type="number" id="setMaxWords" min="60" max="1200" step="10">
+      </div>
+      <div class="setting-row">
+        <label for="setRecommended">Recommended target</label>
+        <select id="setRecommended">
+          <option value="range">Full target range</option>
+          <option value="strict">Strict (top of range, e.g. 192–200)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Assistance</h2>
+      <div class="setting-row">
+        <label for="setSound">Timer sound</label>
+        <input type="checkbox" id="setSound" role="switch">
+      </div>
+      <div class="setting-row">
+        <label for="setWarnings">Warning notifications</label>
+        <input type="checkbox" id="setWarnings" role="switch">
+      </div>
+      <div class="setting-row">
+        <label for="setGuided">Guided Practice by default</label>
+        <input type="checkbox" id="setGuided" role="switch">
+      </div>
+    </div>
+  </div>
+
+  <p class="privacy-note">Your essays are stored locally in this browser. Clearing site data will remove them.</p>
+</section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
